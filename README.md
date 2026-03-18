@@ -25,3 +25,7 @@ Libraries:
 pandasfor time series manipulation.
 statsmodelsfor performing linear regressions and statistical tests.
 matplotlibfor visualizing trends and visually validating the assumption of parallel trends.
+
+How to Run:
+Install dependencies: pip install -r requirements.txt
+Run the scripts in the /scriptsfolder.
