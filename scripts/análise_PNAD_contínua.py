@@ -79,7 +79,7 @@ print("\nA gerar arquivo LaTeX...")
 # Aqui o nome deve ser 'modelo', conforme definido acima
 conteudo_latex = modelo.summary().as_latex()
 
-with open('../output/tables/tabela_analise_PIB.tex', 'w', encoding='utf-8') as f:
+with open('../output/tables/tabela_formal_informal.tex', 'w', encoding='utf-8') as f:
     f.write(conteudo_latex)
 
 print("Arquivo 'tabela_formal_informal.tex' gravado com sucesso em Downloads!")
