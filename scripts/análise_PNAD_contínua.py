@@ -79,7 +79,7 @@ print("\nA gerar arquivo LaTeX...")
 # Aqui o nome deve ser 'modelo', conforme definido acima
 conteudo_latex = modelo.summary().as_latex()
 
-with open(r'C:\Users\psilva4\Downloads\tabela_formal_informal.tex', 'w', encoding='utf-8') as f:
+with open('../output/tables/tabela_analise_PIB.tex', 'w', encoding='utf-8') as f:
     f.write(conteudo_latex)
 
 print("Arquivo 'tabela_formal_informal.tex' gravado com sucesso em Downloads!")
@@ -97,3 +97,4 @@ plt.ylabel('% do Total de Ocupados')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.show()
+plt.savefig('../output/figures/grafico_analise.png')
