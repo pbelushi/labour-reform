@@ -5,7 +5,7 @@ Project Title: The Impact of Labor Reform on Formal Employment: A DiD Analysis U
 
 Objective: This project aims to measure the impact of Brazil’s 2017 labor reform on job creation, independent of cyclical economic effects
 
-Methodology
+# Methodology
 The analysis uses the Differences-in-Differences (DiD) method to estimate the impact on formal employment levels in the Brazilian labor market, using data from the PNAD Contínua (IBGE).
 1. The Differences-in-Differences (DiD) Model
 The objective of the DiD model is to identify the variation in the treatment group (Employees with a Formal Contract) that occurs after the event of interest (Labor Reform), subtracting the variation observed in the control group (Employees without a Formal Contract) during the same period.
@@ -26,6 +26,19 @@ pandasfor time series manipulation.
 statsmodelsfor performing linear regressions and statistical tests.
 matplotlibfor visualizing trends and visually validating the assumption of parallel trends.
 
-How to Run:
+# How to Run:
 Install dependencies: pip install -r requirements.txt
 Run the scripts in the /scriptsfolder.
+
+# How to mention:
+APA Style:
+Silva, P. (2026). Labour Reform Impact Analysis: A DiD Approach using PNAD Contínua Data (Version 1.0.0) [Computer software]. GitHub. https://github.com/pbelushi/labour-reform
+
+BibTex:
+@software{Silva_Labour_Reform_2026,
+  author = {Silva, P.},
+  title = {{Labour Reform Impact Analysis: A DiD Approach using PNAD Contínua Data}},
+  url = {https://github.com/pbelushi/labour-reform},
+  version = {1.0.0},
+  year = {2026}
+}
