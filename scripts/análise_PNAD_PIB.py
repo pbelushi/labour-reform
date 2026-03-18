@@ -74,7 +74,7 @@ print("Gerando arquivo LaTeX...")
 # Verifique se o nome aqui é exatamente o que você usou na linha da regressão
 conteudo_latex = modelo_pib.summary().as_latex() 
 
-with open(r'C:\Users\psilva4\Downloads\tabela_analise_PIB.tex', 'w', encoding='utf-8') as f:
+with open('../output/tables/tabela_analise_PIB.tex', 'w', encoding='utf-8') as f:
     f.write(conteudo_latex)
 
 print("Arquivo gravado com sucesso!")
