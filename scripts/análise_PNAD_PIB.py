@@ -3,7 +3,7 @@ import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
 
 # 1. Carga e Limpeza (Mantendo sua estrutura funcional)
-caminho_arquivo = r'C:\Users\psilva4\Downloads\PNAD contínua.csv'
+caminho_arquivo = '../data/PNAD contínua.csv'
 df = pd.read_csv(caminho_arquivo, sep=';', skiprows=4, encoding='utf-8', encoding_errors='ignore')
 df = df.dropna(subset=[df.columns[0]])
 
