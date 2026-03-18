@@ -30,9 +30,9 @@ matplotlibfor visualizing trends and visually validating the assumption of paral
 Install dependencies: pip install -r requirements.txt
 Run the scripts in the /scriptsfolder.
 
-# How to mention:
-APA Style:
-Silva, P. (2026). Labour Reform Impact Analysis: A DiD Approach using PNAD Contínua Data (Version 1.0.0) [Computer software]. GitHub. https://github.com/pbelushi/labour-reform
+## Citation
+If you use this codebase or the processed data in your research, please cite it as:
+Silva, P. (2026). Labour Reform Impact Analysis: A DiD Approach using PNAD Contínua Data. GitHub repository: https://github.com/pbelushi/labour-reform
 
 BibTex:
 @software{Silva_Labour_Reform_2026,
