@@ -82,7 +82,7 @@ conteudo_latex = modelo.summary().as_latex()
 with open('../output/tables/tabela_formal_informal.tex', 'w', encoding='utf-8') as f:
     f.write(conteudo_latex)
 
-print("Arquivo 'tabela_formal_informal.tex' gravado com sucesso em Downloads!")
+print("Arquivo 'tabela_formal_informal.tex' gravado com sucesso!")
 
 # --- GRÁFICO ---
 # (O gráfico deve vir por último para não travar a gravação do arquivo)
@@ -98,3 +98,5 @@ plt.legend()
 plt.grid(True, alpha=0.3)
 plt.show()
 plt.savefig('../output/figures/grafico_analise.png')
+
+print("Gráfico gravado com sucesso!")
