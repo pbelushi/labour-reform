@@ -3,7 +3,7 @@ import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
 
 # 1. Carga dos Dados
-caminho_arquivo = r'C:\Users\psilva4\Downloads\PNAD contínua.csv'
+caminho_arquivo = '../data/PNAD contínua.csv'
 
 # Lendo o CSV ignorando as primeiras linhas de metadados
 df = pd.read_csv(caminho_arquivo, sep=';', skiprows=4, encoding='utf-8', encoding_errors='ignore')
