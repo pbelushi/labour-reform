@@ -1,5 +1,5 @@
 # labour-reform
-Data about behavior of jobs market in Brazil after and before 2017's labour reform 
+Data about behavior of jobs market in Brazil after and before 2017's labour reform (work in progress)
 
 Project Title: The Impact of Labor Reform on Formal Employment: A DiD Analysis Using Data from the Continuous National Household Sample Survey (PNAD Contínua)
 
