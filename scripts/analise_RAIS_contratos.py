@@ -6,7 +6,6 @@ from ftplib import FTP
 import matplotlib.pyplot as plt
 
 # --- CONFIGURAÇÕES DE DIRETÓRIOS INTELIGENTES ---
-# Descobre automaticamente se estamos no Google Colab ou no VS Code local
 if 'google.colab' in sys.modules:
     print("🌍 Rodando no Google Colab! Usando caminhos da nuvem...")
     BASE_DIR = '/content'
@@ -25,9 +24,6 @@ os.makedirs(OUTPUT_FIGURES, exist_ok=True)
 ANOS = ['2016', '2017', '2018', '2019', '2020', '2021']
 UFS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 
-# Apaga o .7z logo após extrair para proteger seu Disco Rígido
-APAGAR_ZIP_APOS_PROCESSAR = True 
-
 def processar_arquivo_txt(caminho_txt):
     """Lê o ficheiro txt aos pedaços (chunks) e soma os contratos da Reforma Trabalhista."""
     print(f"     -> Lendo e contabilizando dados de {os.path.basename(caminho_txt)}...")
@@ -35,6 +31,7 @@ def processar_arquivo_txt(caminho_txt):
     chunksize = 10**6 # 1 milhão de linhas por vez
     
     try:
+        # A RAIS pode vir sem extensão, mas é sempre CSV delimitado por ponto e vírgula
         for chunk in pd.read_csv(caminho_txt, sep=';', encoding='latin1', chunksize=chunksize, on_bad_lines='skip', low_memory=False):
             res_parciais['Total_Vinculos'] += len(chunk)
             
@@ -57,22 +54,24 @@ for ano in ANOS:
     resultados_ano = {'Ano': ano, 'Total_Vinculos': 0, 'Intermitente': 0, 'Teletrabalho': 0, 'Parcial': 0}
     
     try:
-        # 1. PEGAR A LISTA DE ARQUIVOS (Liga e desliga rápido)
+        # 1. PEGAR A LISTA DE ARQUIVOS
         ftp = FTP('ftp.mtps.gov.br', timeout=120)
         ftp.login() 
         ftp.cwd(f'pdet/microdados/RAIS/{ano}/')
         arquivos_ftp = ftp.nlst()
         ftp.quit()
         
-        # Filtra apenas arquivos de vínculos
+        # Filtra apenas arquivos de vínculos (Regra Corrigida para 2018-2021)
         alvos = []
         for arq in arquivos_ftp:
             arq_upper = arq.upper()
             if not (arq_upper.endswith('.7Z') or arq_upper.endswith('.ZIP')): continue
-            if 'ESTAB' in arq_upper: continue
+            if 'ESTAB' in arq_upper: continue # Pula arquivos de estabelecimentos
             
             if int(ano) >= 2018:
-                if 'VINC_PUB' in arq_upper: alvos.append(arq)
+                # A partir de 2018, pega os arquivos agregados do Brasil ou por Região
+                if 'VINC_PUB' in arq_upper or 'RAIS_VINC' in arq_upper: 
+                    alvos.append(arq)
             else:
                 for uf in UFS:
                     if arq_upper.startswith(uf) or f'_{uf}' in arq_upper:
@@ -81,20 +80,18 @@ for ano in ANOS:
                         
         print(f" -> Encontrados {len(alvos)} ficheiros para descarregar neste ano.")
         
-        # 2. LOOP DE ARQUIVOS (Processa 1 a 1, ligando e desligando o FTP)
+        # 2. LOOP DE ARQUIVOS
         for nome_arq in alvos:
             caminho_7z = os.path.join(DATA_DIR, f"{ano}_{nome_arq}")
             precisa_baixar = True
             
-            # Liga FTP para checar tamanho e baixar
             ftp = FTP('ftp.mtps.gov.br', timeout=120)
             ftp.login()
             ftp.cwd(f'pdet/microdados/RAIS/{ano}/')
             tamanho_ftp = ftp.size(nome_arq)
 
             if os.path.exists(caminho_7z):
-                tamanho_local = os.path.getsize(caminho_7z)
-                if tamanho_local == tamanho_ftp:
+                if os.path.getsize(caminho_7z) == tamanho_ftp:
                     print(f"\n  -> [Pular Download] O ficheiro {nome_arq} já existe e está completo.")
                     precisa_baixar = False
                 else:
@@ -114,37 +111,35 @@ for ano in ANOS:
                 with open(caminho_7z, 'wb') as f:
                     ftp.retrbinary(f'RETR {nome_arq}', lambda b: (f.write(b), mostrar_progresso(b)))
                 
-                # Checagem de segurança
                 if os.path.getsize(caminho_7z) != tamanho_ftp:
                     ftp.quit()
                     raise ValueError(f"A conexão caiu! Download incompleto do ficheiro {nome_arq}.")
                 print(f"\n     Download concluído.")
 
-            ftp.quit() # Fechamos a conexão aqui para o servidor não nos derrubar por inatividade
+            ftp.quit()
 
-            # 3. EXTRAIR E CONTABILIZAR
+            # 3. EXTRAIR, CONTABILIZAR E DESTRUIR O LIXO
             print(f"  -> A extrair {nome_arq}...")
             with py7zr.SevenZipFile(caminho_7z, mode='r') as z:
                 z.extractall(path=DATA_DIR)
                 nomes_extraidos = z.getnames()
             
+            # Garante que apaga tudo o que foi extraído, mesmo se não tiver extensão
             for nome_txt in nomes_extraidos:
-                if nome_txt.upper().endswith('.TXT') or nome_txt.upper().endswith('.CSV'):
-                    caminho_txt = os.path.join(DATA_DIR, nome_txt)
+                caminho_txt = os.path.join(DATA_DIR, nome_txt)
+                if os.path.isfile(caminho_txt):
                     res_parciais = processar_arquivo_txt(caminho_txt)
                     
-                    # Acumula resultados no total do ano
                     resultados_ano['Total_Vinculos'] += res_parciais['Total_Vinculos']
                     resultados_ano['Intermitente'] += res_parciais['Intermitente']
                     resultados_ano['Teletrabalho'] += res_parciais['Teletrabalho']
                     resultados_ano['Parcial'] += res_parciais['Parcial']
                     
-                    os.remove(caminho_txt) # Apaga o .txt gigante
+                    os.remove(caminho_txt) # Destrói o arquivo gigante imediatamente!
             
-            if APAGAR_ZIP_APOS_PROCESSAR:
-                if os.path.exists(caminho_7z):
-                    os.remove(caminho_7z)
-                print(f"  -> Ficheiro compactado {nome_arq} apagado para libertar espaço.")
+            if os.path.exists(caminho_7z):
+                os.remove(caminho_7z) # Apaga o .7z também
+                print(f"  -> Lixeira Esvaziada: Arquivos pesados apagados para libertar espaço.")
 
     except Exception as e:
         print(f"Erro ao processar o ano {ano}: {e}")
