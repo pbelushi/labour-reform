@@ -45,13 +45,4 @@ Run the scripts in the /scripts folder.
 
 ## Citation
 If you use this codebase or the processed data in your research, please cite it as:
-Silva, P. (2026). Labour Reform Impact Analysis: A DiD Approach using PNAD Contínua and RAIS Data. GitHub repository: https://github.com/pbelushi/labour-reform
-
-BibTex:
-@software{Silva_Labour_Reform_2026,
-  author = {Silva, P.},
-  title = {{Labour Reform Impact Analysis: A DiD Approach using PNAD Contínua and RAIS Data}},
-  url = {https://github.com/pbelushi/labour-reform},
-  version = {1.1.0},
-  year = {2026}
-}
+Silva, P. (2026). Labour Reform Impact Analysis: A DiD Approach using PNAD Contínua and RAIS Data [Data set]. Zenodo. https://doi.org/10.5281/zenodo.19220247
