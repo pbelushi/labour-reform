@@ -5,6 +5,12 @@ Project Title: The Impact of Labor Reform on Formal Employment and New Contract 
 
 Objective: This project aims to measure the impact of Brazil’s 2017 labor reform on job creation, independent of cyclical economic effects, and to evaluate the adoption rate of new contract models (Intermittent Work and Telework) introduced by the legislation.
 
+### How to reproduce the data:
+1. Go to [Google Cloud Console > BigQuery](https://console.cloud.google.com/bigquery).
+2. Run the queries from the `sql/` folder in the environment.
+3. Export the results in CSV format and save them in the `data/` directory of this project.
+4. Run the Python scripts (in the `scripts/` folder) to generate the statistical visualizations.
+
 # Methodology
 The project is divided into two main analytical fronts, utilizing different methodologies and national databases:
 
@@ -25,18 +31,17 @@ $\beta_3$ (Interaction Coefficient): This is the DiD estimator. It indicates the
 $\text{Controls}$ (GDP): In one of the models, we included quarterly GDP as a control variable to ensure that the observed variations are not merely a reflection of the economic cycle (growth or recession).
 
 2. Descriptive Analysis of New Contract Models (RAIS)
-To evaluate the direct adhesion to the new labor modalities, we process microdata from the Annual Report of Social Information (RAIS) via the Ministry of Labor's FTP server.
+To enable historical analysis of the RAIS (Annual Social Information Report) without the need to process tens of gigabytes of raw microdata on local or virtual servers, this project adopted cloud-based extraction via **Google BigQuery**, using the architecture of the [Database](https://basedosdados.org/).
 
-Big Data Processing: Since RAIS data consists of tens of gigabytes of uncompressed text files per year, the extraction script (analise_RAIS_contratos.py) is optimized to download .7z files dynamically, extract them, and read the data in memory chunks (chunksize) using Pandas, filtering only the necessary columns (Ind Trab Intermitente, Ind Teletrabalho, Ind Trab Parcial) to prevent RAM overflow.
+The SQL queries used to generate the datasets (CSVs) for this study are documented in the `sql/` folder:
 
-Environment Agnostic: The script automatically detects if it is running locally or in a cloud environment like Google Colab, adjusting directory paths accordingly.
+* **`01_evolucao_vinculos_rais.sql`**: Generates the historical series (2016–2024) to compare the adoption rate of intermittent and part-time contracts relative to traditional employment.
+* **`02_perfil_demografico_renda.sql`**: Provides a cross-sectional snapshot of the year 2024 to calculate wage disparities and the average age of workers under each contract type.
 
 # How to Run:
 Install dependencies: pip install -r requirements.txt (Ensure py7zr is added to your requirements).
 
 Run the scripts in the /scripts folder.
-
-Note on RAIS Processing: The analise_RAIS_contratos.py script downloads and processes the entire Brazilian workforce database year by year. Depending on your internet connection and CPU, this process can take several hours. For faster execution, it is highly recommended to run this specific script on Google Colab. The script is designed to clean up temporary gigabyte-sized .txt and .7z files automatically to save disk space.
 
 ## Citation
 If you use this codebase or the processed data in your research, please cite it as:
